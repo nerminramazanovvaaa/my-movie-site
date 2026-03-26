@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8"> <!--Bütün dillere uygunluq-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--Responsivlik-->
+    <title>Online Movie Ticket</title>
+                                                           
+<!--CSS HİSSESİ-->
+    <style>
+        * { /* All */
+            margin: 0; /* Xarici boslug - Elave bosluqlari aradan qaldirir */
+            padding: 0; /* Daxili boslug - hemcinin */
+            box-sizing: border-box; /* Eger men qutunun ölşüsü ile daxili boşlqlari uygunsuz versem, bu onu tenzimleyir */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Komputerden asili olaraq bütün srifleri bir bir yoxlayir */
+        }
+        body {
+            height: 100%; /* Gorunüşü düzgün tenzimlemek üçün önemlidir */
+            width: 100%; /* hemcinin */
+            overflow: hidden; /* Bu ekranı sabir saxlayır, yeni scroll olmur */
+        }
+        /* Arxa Fon Şəkli  */
+        .bg-image {
+            background-image: url('https://www.plex.tv/wp-content/uploads/2025/03/Watch-Free-Hero-2048x1152-1.png');
+            background-size: cover; /* Şekli ele tenzimleyir ki, bütün arxa fonu cover elesin, yeni örtsün */
+            background-position: center;  /* Şekili tenzimledikde bele, center, yeni merkez hissesi esas planda olsun- sağa ve ya sola dartilmasin */
+            height: 100%;
+            width: 100%;
+            position: fixed;  /* Şeklin daim arxa fonda qalmasi üçündür. Next seyfeye keçilse bele */
+            z-index: -1; /* Şekil esas hisseni örtməsin ən arxa fonda qalsın deye */
+        }
+        /* Giriş hissesini tenzimleyirik */
+        .login-container { 
+            display: flex; /* Konteyneri elastik edir-normalda elementleri yuxaridan asagi duzulur ama bu funksiya bizim bunu tensizmlememize imkan verir. */
+            justify-content: center; /* Elementi üfüqi (sağ-sol) olaraq mərkəzə gətirir */
+            align-items: center; /* Elementi şaquli (yuxarı-aşağı) olaraq mərkəzə gətirir */
+            height: 100vh; /* Viewport Height - Ekran hündürlüyü. Bu olmasa merkezleme duzgun işlemez */
+            padding: 20px; /* Çox balaca ekranda açanda login hissesi ekrana tam yapışmasın, mesafe olsun deyedir */
+        }
+        .login-box {
+            background: rgba(255, 255, 255, 0.1); /* Login qutusunun şeffaf olmasi üçündür. Sadece 10% görunen bir ağ reng seçmişik ki, aexa fondakı şekil görünsün */
+            backdrop-filter: blur(10px); /* Bu hemin qutuya 10piksel derecesinde blurluq verir ki, yazilar oxuna bilsin. Çünkü şeffaflıq yazıların oxuna bilmesi üçün kifayet deyil. */
+            border-radius: 15px; /* Küçncləri dairəviləşdirir */
+            padding: 40px; /* Qutu daxilindəki bütün elementlərin kənarlardan məsafəsidir. */
+            width: 100%; /* Responsivlik üçündür. Kiçik ekranlarda ekranı 100% tutsun. Ancaq ekran böyük olduqda bele 400px nı keçməsin. Yaxşı görünməsi üçündür. */
+            max-width: 400px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Sadece login hissesinin daha aydın seçilməsi üçün arxaya kolge verir.
+            0 - sağa sola meyl etmesini bildiri. 8px - aşağıya meyl, sanki yuxarıdan işıq. 32px -  bu olmasa sadece qara birşey olar.Kölgenin dağilmasini bildirir. 0 - kölgenin özünün ölçüsünü bildirir. 0 verilib- kolge qutudan kenara çıxa bilmez. */
+            border: 1px rgba(255, 255, 255, 0.18) solid;
+            color: white;
+            text-align: center;
+        }
+        .login-box h2 { /* "Xoş Gəldiniz" yazısı üçündür. */
+            font-size: 2rem; /* Standart 16px=rem. 2rem gösterir ki, yazi standart yazidan 2x böyükdür=32px. */
+            margin-bottom: 10px; /* Yazilar arasindaki mesafeni tenzimleyir- elementin özünden asagida gelen elementle arasindaki mesafe üçündür. */
+            font-weight: 600; /* font-weight: bold = 700 ;  400 = normal yazı;  */
+        }
+        .login-box p { /* Ondan aşağıdakı yazı üçündür. Daha az nəzərə çarpan olmalıdır. */
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            color: #ddd;
+        }
+        /* Giriş Sahələri */
+        .input-group {
+            margin-bottom: 20px; /* Usename ve şifre arasindaki mesafedir. */
+            text-align: left;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 15px; /* Yuxarı-Sağ-Aşağı-Sol. Sol tərəfə yapışmaması üçün mesafe verir. Hemçinin yuxarıdan aşağıdan sağdan tenzimleyir.  */
+            background: rgba(255, 255, 255, 0.2); /* Ağ rəng olur. Ancaq, 0 - tam şeffaf, gorunmeyen ; 1 - tam aydin gorunen 20% şəffaflıq verir.Yeni, 20% görünür. */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* İnput qutularının çərçivəsini daha səliqəli göstərmək üçündür.
+            1px Solid çərçivənin ətrafına incə qırılmayan xətt verir. 10% görünürlük ilə çərçivə daha səliqəli görünür. */
+            border-radius: 8px; /* küncləri dairəviləşdirmək üçündür. */
+            color: white;
+            font-size: 1rem;
+        }
+        /* Placeholder - xanaların daxilinde yazilan sozlerdir ki, xanalar doldurulduqda yox olur. */
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        /* Parolu unutduqda giriş düyməsi */
+        .action-btns {
+            display: flex; /* Normalda elementlər sol yuxarı küncə yapışır və bir birinin altında durur. Flex buna mane olur. */
+            justify-content: space-between; /* Özündən yuxarıdakı elementdən qaçır. Aralarındakı məsafə maximum olur. Bunu qutuda margin-right ilə də eləmək olar. Ancaq bu daha sadədir. */
+            align-items: center; /* Şaquli tənzimləmədir - yuxarı ve asagi */
+            margin-bottom: 20px; /* Aşağıdakı elementlə arasındakı məsafəni təyin edir. */
+            font-size: 0.85rem;
+        }
+        .action-btns a { /* a linki bildirir. Deyir ki, action buttondakı linkleri tap ve asagidakileri tetbiq et. */
+            color: #ffc107;
+            text-decoration: none; /* brauzerlər linklərə avtomatik alt xətt verir. None ilə bunu aradan qaldırırıq. */
+            transition: 0.3s; /* Veriləcək dizaynın 0.3 saniyə müddətində işləməsini təmin edir. */
+        }
+        .action-btns a:hover { 
+            text-decoration: underline; /* Verilən dizayn */
+        }
+        /* Giriş Düyməsi */
+        .login-btn {
+            width: 100%; /* Login qutusunun bütün enini tam tutur */
+            padding: 15px; /* Daxili hündürlük verir düyməyə */
+            background-color: #ffc107; 
+            border: none;
+            border-radius: 8px;
+            color: #333; 
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer; /* Kursor "Daxil ol"un üstündə olduqda ox işarəsi əl işarəsinə çevrilir. */
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+        .login-btn:hover {
+            background-color: #f99500e9;
+        }
+        /* Qeydiyyat  */
+        .register-link {
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+        .register-link a {
+            color: #ffc107;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .register-link a:hover {
+            color: #f99500e9;
+        }
+
+        #main-content{
+            display: none; /* JavaScript-de display: block təyin olunana qədər bura görünmür. */
+            padding: 20px;
+            width: 100%; /* Ekranın bütün enini kaplasın */
+            height: auto; /* BU ÇOX ÖNƏMLİDİR. Scroll funksiyası üçün vacibdir. Movie-card çox ola bilər biz səhifənin sürüşdürülə bilməsini istəyiriksə height sabit bir dəyər qoyulmamalıdır. */
+            overflow: visible; /* Əgər movie-card-lara hər hansı böyümə effekti verilibsə, bunun görünməsi üçün visible önəmlidir. hidden daşma durumunda böyüyən hissələri kəsəcəkdi ki, buda estetik görünməzdi. */
+        }    
+
+        /* Axtarış Bölməsi */
+    .search-container {
+        max-width: 800px; /* Max genişliyi */
+        margin: 0 auto 50px auto;
+        display: flex; /* input və button-u bir birindən ayrımaq üçündür. */
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .search-container input {
+        flex: 1; /* Bu o deməkdir ki,düymə özünə lazım olan qədər yer tutur. Geri qalan hissə axtarış sahəsinindir. Nə qədər sahə olmasından asılı olmayaraq..  */
+        background: transparent; /* Axtarış panelinin öz rəngi ağ olur, bunun yerinə onu tam şəffaf edir.  */
+        border: none;/* standart çərçivəni silir ki, şəffaflaşdırdığımız hissə bilinməsin.  */
+        outline: none; /* Standart halda axtarış panelinə klik etdikdə ağ effekt yaranır. Bu onu silir. */
+        color: white;
+        padding-left: 20px; /* Soldan məsafə */
+        font-size: 1rem;
+    }
+    .search-btn {
+        background: #ffc107;
+        border: none;
+        padding: 10px 25px; /* Daxildən məsafə - yuxarı aşağı 10px , sağ sol 25px */
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .search-btn:hover{
+        background-color: #ff9900;
+    }
+    .movies-grid {
+        display: grid; /* Grid-şəbəkə, Flex yan-yana sətirə nəzərən düzmək üçün əla idi. Grid isə həm sətir həm də sütuna görə cədvəl kimi düzmə imkanı verir.*/
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* ekranda nə qədər yer varsa ora mümkün qədər maximum sütun yerləşdirir. Min qutu ölçüsü= 280px, 1fr=Əgər boş yer qalsa, o boşluğu bütün qutular arasında bərabər bölüşdürür. */
+        gap: 25px; /* Gap elementlər arası məsafəni göstərir. Həm yan-yana olanda həm də üst-üstə */
+        padding: 20px;
+    }
+
+    .movie-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: 0.3s ease;
+        position: relative;
+        text-align: left; /* Yazılar sola */
+    }
+    .movie-card:hover {
+        transform: translateY(-5px); /* translateY - elementi şaquli (yuxarı-aşağı) hərəkət elətdirir. -5px = mənfi  olduğu üçün qutu aşağı yox, yuxarı doğru sürüşür. */
+        border-color: #ffc107;
+    }
+    /* Reytinq */
+    .imdb {
+        position: absolute; /* Normalda elementlər bir-birinin ardınca düzülür. Absolute elementin sərbəst olmasına imkan verir. İstənilən yerdə yerləşə bilər. */
+        top: 10px; /* Yuxarı küncdən 10px aşağı */
+        left: 10px; /* Sol küncdən 10px sağa */
+        background: rgba(255, 193, 7, 0.8);
+        color: black;
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        z-index: 10; /* İMDb şəklin arxasında itməməsi üçün yüksək qiymət verilir. */
+    }
+    /* Filmin posteri */
+    .movie-card img {
+        width: 100%; /* Qutunun bütün enini tam doldurmalıdır. */
+        height: 270px; /* Hündürlük sabit rəqəm olur. Çünki internetdən tapdığımız şəkillərin ölçüsü fərqli olur. */
+        object-fit: cover; /* Şəkli sıxmır. Mərkəzi qoruyaraq kənardan qırpır, crop edir */
+        border-bottom: 1px solid rgba(255,255,255,0.2); /* Şəklin tam altında çox incə bir xətt çəkir. */
+    }
+    .movie-info {
+        padding: 15px;
+        color: white;
+    }
+    .movie-info h3 {
+        margin-bottom: 3px;
+        font-size: 1.1rem;
+    }
+    .genre {
+        color: #ffc107; 
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+    .price, .time {
+        font-size: 0.85rem;
+        color: #ccc;
+        margin-bottom: 4px;
+    }
+    /* Bilet Al Düyməsi */
+    .ticket-btn {
+        width: 100%;
+        padding: 10px;
+        background: transparent;
+        border: 1px solid #ffc107;
+        color: #ffc107;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+        font-size: 0.9rem;
+    }
+    .ticket-btn:hover {
+        background: #ffc107;
+        color: black;
+    }
+</style>
+</head>
+
+<!--HTML HİSSESİ-->
+<body>
+    <div class="bg-image"></div>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Xoş Gəldiniz</h2>
+            <p>"Online Bilet" hesabınıza giriş edin</p>
+            <form action="#" method="post"> 
+            <!-- Bu üsul təhlükəsizlik baxımından önəmlidir. <form> teqi istifadəçi "daxil ol" düyməsini basandan sonra məlumatlara hansı server ünvana ötürəcəyini təyin edir "#" = məlumatları elə bu serverin özünə göndərir. method="post" - təhlükəsizlik üçündür.şifrə və email kimi məlumatların search zolağında görünmədən gizli şəkildə ötürülməsini təmin edir. Əgər bunun yerinə "get" olsaydı, mail və şifrə zolaqda görünəcəkdi. -->
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Email və ya Telefon nömrəsi" required>
+                </div> <!-- type="mail" yazsaydıq, brauzer @ işarəsinin olub-olmadığını yoxlayacaqdı. name- brauzerə yazının hardan gəldiyini və nə olduğunu bildirir : username = nrmnrmznvaa@gmail.com-->
+                <!-- required = istifadəçi xananı doldurmadan daxil ol düyməsinə basanda xəbərdarlıq verir ki, sahə doldurulmayıb. Boş məlumatların serverə gedib qarışıqlıq yaratmasına mane olur. -->
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Şifrə" required>
+                </div> <!-- Təhlükəsizlik üçün vacibdir. type="password" istifadəçi xanaya simvol daxil etdikcə onları nöqtə və ya ulduz kimi gizləyir. -->
+                <div class="action-btns"> 
+                    <div>
+                        </div> <!-- divlərdən space funksiyasını oynayır. justify-content: space-between; tətbiq edildikdə bu boş div ən sola gedir şifrəni unutdun isə ən sağa- beləliklə səliqəli bir görünüş yaranır. -->
+                    <a href="#">Şifrəni unutdun?</a> <!-- Hypertext Reference= linkin hara aparacağını təyin edir. -->
+                </div>
+                <button type="submit" class="login-btn">Daxil Ol</button> <!-- submit- formu serverə göndərir. -->
+            </form>
+            <div class="register-link">
+                Hesabınız yoxdur? <a href="#">Qeydiyyatdan keçin</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none; padding-top: 30px;"> <!-- style="display: none"- sehife ilk açılan anda onu göstərmir. ilk login seyfesi açılır. Ancaq bu funksiyanı tek başına JavaScript de vere bilir. style="padding-top: 30px;" - yuxarıdan 30 piksellik məsafə -->  
+    <!-- QEYD : id-unikal elementlər üçündür. Məsələn: #main-content, class-təkrarlanan dizaynlı elementlər üçündür. Məsələn: .movie-card --> 
+        <div class="search-container">
+        <input type="text" placeholder="Film və ya janr axtar...">
+        <button class="search-btn">Axtar</button>
+    </div>
+<!-- Film kartlarını yaradaq. -->
+    <div class="movies-grid">   
+        <!-- Stranger Things -->
+        <div class="movie-card">
+            <div class="imdb">İMDb 8.6</div>         
+            <img src="https://i0.wp.com/bloody-disgusting.com/wp-content/uploads/2025/10/Screenshot-2025-10-31-105155.png?fit=1059%2C693&ssl=1" alt="Stranger Things">           
+            <div class="movie-info">
+                <h3>Stranger Things</h3>
+                <p class="genre">Science Fiction, Horror</p>                
+                <p class="price">Bilet: 10 AZN </p>
+                <p class="time">Tarix: <time datetime="2026-03-25T12:00"></time> 25-03-2026, 12:00-14:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);"> <!-- Horizontal Rule- üfüqi xəttdir. İnline olaraq stil verilir. Yuxarı və aşağıdan 10 px boşlq saxlanılır və xəttin rəngi və formatı müəyyənləşdirilir. -->
+                <button class="ticket-btn">Bilet Al</button>
+            </div>
+        </div>
+        <!-- Wednesday -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 8.0</div>
+            <img src="https://assets.mycast.io/posters/wensday-season-3-fan-casting-poster-495796-large.jpg?1741756032" alt="Wednesday">
+            <div class="movie-info">
+                <h3>Wednesday</h3>
+                <p class="genre">Supernatural Mystery, Horror</p>
+                <p class="price">Bilet: 8 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-04-13T16:00"></time> 13-04-2026, 16:00-18:30</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- Lord of the Rings -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 8.9</div>
+            <img src="https://m.media-amazon.com/images/I/91+4I6I3dKL.jpg" alt="The Lord of the Rings">
+            <div class="movie-info">
+                <h3>The Lord of the Rings</h3>
+                <p class="genre">Action, Adventure</p>
+                <p class="price">Bilet: 11 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-03-16T14:00"></time> 16-03-2026, 14:00-17:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- Avengers:Endgame -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 8.4</div>
+            <img src="https://hips.hearstapps.com/hmg-prod/images/d1pklzbuyaab0la-1552597012.jpg?crop=1xw:0.5064697265625xh;center,top&resize=1200:*" alt="Avengers:Endgame">
+            <div class="movie-info">
+                <h3>Avengers:Endgame</h3>
+                <p class="genre">Superhero, Sci-Fi, Action</p>
+                <p class="price">Bilet: 10 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-04-13T14:00"></time> 13-04-2026, 14:00-17:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- Fast and Furious -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 7.0</div>
+            <img src="https://www.tallengestore.com/cdn/shop/products/Fast_Furious_1_-_Paul_Walker_-_Vin_Diesel_-_Tallenge_Hollywood_Action_Movie_Poster_a77ac65b-b502-4ff4-b0b2-008b4704092f.jpg?v=1582542989" alt="Fast&Furious">
+            <div class="movie-info">
+                <h3>Fast&Furious</h3>
+                <p class="genre">Action</p>
+                <p class="price">Bilet: 6 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-04-13T17:00"></time> 13-04-2026, 17:00-19:20</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- Squid Game -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 7.8</div>
+            <img src="https://preview.redd.it/netflix-squid-game-2-main-poster-premieres-december-26-v0-b9bl9ay2yb3e1.jpeg?auto=webp&s=113edb5b17dd98b6d1ee0e82dc4797d62c72d084" alt="Squid Game">
+            <div class="movie-info">
+                <h3>Squid Game</h3>
+                <p class="genre">Drama, Action</p>
+                <p class="price">Bilet: 8 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-03-25T15:00"></time> 25-03-2026, 15:00-17:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- Harry Potter -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 8.1</div>
+            <img src="https://www.universalorlando.com/webdata/k2/en/us/files/Images/gds/uor-wwohp-logo-3-kids-clouds-key-art-hero-b.jpg" alt="Harry Potter">
+            <div class="movie-info">
+                <h3>Harry Potter</h3>
+                <p class="genre">Fantasy&Adventure, Mystery</p>
+                <p class="price">Bilet: 9 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-05-10T16:00"></time> 10-05-2026, 16:00-18:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+        <!-- The Vampire Diaries -->
+        <div class="movie-card">
+            <div class="imdb">IMDb 8.3</div>
+            <img src="https://m.media-amazon.com/images/I/618dtTNCZ8L._AC_UF1000,1000_QL80_.jpg" alt="The Vampire Diaries">
+            <div class="movie-info">
+                <h3>The Vampire Diaries</h3>
+                <p class="genre">Supernatural Drama, Teen Drama, Romance</p>
+                <p class="price">Bilet: 9 AZN</p>
+                <p class="time">Tarix: <time datetime="2026-10-05T13:00"></time> 10-05-2026, 13:00-15:00</p>
+                <hr style="margin: 10px 0; border: 0.5px solid rgba(255,255,255,0.1);">
+                <button class="ticket-btn"> Bilet Al</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--JAVASCRİPT HİSSƏSİ-->
+<script src="vebsite2.js"></script>
+
+</body>
+</html>
