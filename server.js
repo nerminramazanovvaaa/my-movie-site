@@ -7,13 +7,7 @@ const { Pool } = require('pg');//psql vb ile elaq ucun bağlanti y.
 const app = express(); //express fr. basladir. yeni serveri b.
 const port = 3000;
 
-const pool = new Pool({ //serverin vb qosulmasi ucun butun m. daxildir:
-    user: 'postgres',
-    host: 'localhost',
-    database: 'movie_db', //yaratdgin db adi
-    password: '12345', //psql install edende verdiyin sifre
-    port: 5432,
-});
+
 
 app.use(cors()); //icazeleri tenzimleyir
 app.use(bodyParser.json()); //datalari serverin basa duse bileceyi dile cevirir.
