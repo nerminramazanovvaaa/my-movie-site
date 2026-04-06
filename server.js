@@ -1,4 +1,5 @@
 //bunlar server yaratmag ucun lazim olan kitabxanalardır.
+require('dotenv').config();
 const express = require('express'); //node.js framework'ü-işi sadel.hazir aletler ver. sorğu dövriyye id. edir
 const cors = require('cors'); //mux domenlerden gelen sorğ. icaze verir. front backend arasinda elaqe q.
 const bodyParser = require('body-parser'); //server gelen dataları onun basa duseceyi dilə çev.
